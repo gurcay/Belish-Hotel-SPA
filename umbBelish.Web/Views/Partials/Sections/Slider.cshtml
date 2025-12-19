@@ -1,0 +1,51 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var home = Model.AncestorsOrSelf().Last();
+    var carousel = home.Value<IEnumerable<BlockListItem>>("mainCarousel");
+    int i = 0;
+}
+
+@if(carousel != null && carousel.Any())
+{
+
+    <header class="header slider-fade">
+        <div class="owl-carousel owl-theme">
+            <!-- The opacity on the image is made with "data-overlay-dark="number". You can change it using the numbers 0-9. -->
+
+                @foreach(var item in carousel)
+                {
+                    i++;
+                    var content = item.Content;
+                    var img = content.Value<MediaWithCrops>("sliderImage")?.Url();
+                    var button = content.Value<Link>("sliderButton");
+                    var overlay = content.Value("sliderOverlay");
+                    <div class="text-center item bg-img" data-overlay-dark="@overlay" data-background="@img">
+                        <div class="v-middle caption">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-10 offset-md-1">
+                                        <span>
+                                            <i class="star-rating"></i>
+                                            <i class="star-rating"></i>
+                                            <i class="star-rating"></i>
+                                            <i class="star-rating"></i>
+                                            <i class="star-rating"></i>
+                                        </span>
+                                        <h4>@content.Value("sliderTitle")</h4>
+                                        <h1>@content.Value("sliderText")</h1>
+                                        <div class="butn-light mt-30 mb-30"> <a href="@button?.Url" target="@button?.Target" data-scroll-nav="1"><span>@button?.Name</span></a> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+    </header>
+
+}

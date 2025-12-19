@@ -1,0 +1,68 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+
+    Layout = "main.cshtml";
+
+    var home = Model.AncestorsOrSelf().Last();
+}
+
+@section openGraph
+{
+
+    <title>@home.Value("pageTitle")</title>
+    <meta name="description" content="@home.Value("pageText")">
+    <meta name="author" content="@home.Name">
+    <link rel="icon" href="/img/favicon.png" type="image/png" sizes="32x32">
+    <meta name="robots" content="index, follow">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="@home.Url()">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@home.Value("pageTitle")">
+    <meta property="og:description" content="@home.Value("pageText")">
+    <meta property="og:image" content="https://w1-fa.cdn.smule.com/assets/icons/facebook_share-9be2d7093a7a5dbbf9784f28a97cb4fe.jpg">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="smule.com">
+    <meta property="twitter:url" content="@home.Url()">
+    <meta name="twitter:title" content="@home.Value("pageTitle")">
+    <meta name="twitter:description" content="@home.Value("pageText")">
+    <meta name="twitter:image" content="https://w1-fa.cdn.smule.com/assets/icons/facebook_share-9be2d7093a7a5dbbf9784f28a97cb4fe.jpg">
+
+}
+
+<!-- Slider -->
+@await Html.PartialAsync("Sections/Slider")
+<!-- End Of Slider -->
+<!-- About -->
+@await Html.PartialAsync("Sections/About")
+<!-- End Of About -->
+<!-- Rooms -->
+@await Html.PartialAsync("Sections/Rooms")
+<!-- End of Rooms -->
+<!-- Pricing -->
+@await Html.PartialAsync("Sections/Pricing")
+<!-- End of Pricing -->
+<!-- Promo Video -->
+@await Html.PartialAsync("Sections/Video")
+<!-- End Of Promo Video -->
+<!-- Facilties -->
+@await Html.PartialAsync("Sections/Facilities")
+<!-- End Of Facilties -->
+<!-- Testiominals -->
+@await Html.PartialAsync("Sections/Testimonials")
+<!-- End Of Testiominals -->
+<!-- Services -->
+@await Html.PartialAsync("Sections/Services")
+<!-- End Of Services -->
+<!-- News -->
+@await Html.PartialAsync("Sections/News")
+<!-- End Of News -->
+<!-- Reservation & Booking Form -->
+@await Html.PartialAsync("Sections/ReservationForm")
+<!-- End Of Reservation & Booking Form -->
+<!-- Clients -->
+@await Html.PartialAsync("Sections/Clients")
+<!-- End Of Clients -->
