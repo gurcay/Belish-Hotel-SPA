@@ -1,4 +1,15 @@
-﻿    <section class="pricing section-padding">
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var home = Model.AncestorsOrSelf().Last();
+    var about = home.ChildrenOfType("about").FirstOrDefault();
+
+}
+
+    <section class="pricing section-padding">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">

@@ -1,127 +1,55 @@
-﻿    <section class="rooms1 section-padding bg-darkblack" data-scroll-index="1">
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var home = Model.AncestorsOrSelf().Last();
+    var rooms = home?.ChildrenOfType("roomsRepo")?.FirstOrDefault();
+}
+
+
+@if(rooms != null && rooms.Children().Any())
+{
+    <section class="rooms1 section-padding bg-darkblack" data-scroll-index="1">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="section-subtitle">The Cappa Luxury Hotel</div>
-                    <div class="section-title">Rooms & Suites</div>
+                    <div class="section-subtitle">@home.Value("pageTitle")</div>
+                    <div class="section-title">@rooms.Name</div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="position-re o-hidden"> <img src="img/rooms/1.jpg" alt=""> </div> <span class="category"><a href="rooms2.html">Book</a></span>
-                        <div class="con">
-                            <h6><a href="room-details.html">150$ / Night</a></h6>
-                            <h5><a href="room-details.html">Junior Suite</a> </h5>
-                            <div class="line"></div>
-                            <div class="row facilities">
-                                <div class="col col-md-7">
-                                    <ul>
-                                        <li><i class="flaticon-bed"></i></li>
-                                        <li><i class="flaticon-bath"></i></li>
-                                        <li><i class="flaticon-breakfast"></i></li>
-                                        <li><i class="flaticon-towel"></i></li>
-                                    </ul>
-                                </div>
-                                <div class="col col-md-5 text-end">
-                                    <div class="permalink"><a href="room-details.html">Details <i class="ti-arrow-right"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="position-re o-hidden"> <img src="img/rooms/2.jpg" alt=""> </div> <span class="category"><a href="rooms2.html">Book</a></span>
-                        <div class="con">
-                            <h6><a href="room-details.html">200$ / Night</a></h6>
-                            <h5><a href="room-details.html">Family Room</a></h5>
-                            <div class="line"></div>
-                            <div class="row facilities">
-                                <div class="col col-md-7">
-                                    <ul>
-                                        <li><i class="flaticon-bed"></i></li>
-                                        <li><i class="flaticon-bath"></i></li>
-                                        <li><i class="flaticon-breakfast"></i></li>
-                                        <li><i class="flaticon-towel"></i></li>
-                                    </ul>
-                                </div>
-                                <div class="col col-md-5 text-end">
-                                    <div class="permalink"><a href="room-details.html">Details <i class="ti-arrow-right"></i></a></div>
+                @foreach(var item in rooms.Children())
+                {
+                    var img = item.Value<IEnumerable<MediaWithCrops>>("roomImages");
+                    <div class="col-md-4">
+                        <div class="item">
+                            <div class="position-re o-hidden"> <img src="@img?.FirstOrDefault()?.Url()" alt=""> </div> <span class="category"><a href="@item.Url()">Book</a></span>
+                            <div class="con">
+                                <h6><a href="room-details.html">@item.Value("roomPrice")</a></h6>
+                                <h5><a href="room-details.html">@item.Value("roomName")</a> </h5>
+                                <div class="line"></div>
+                                <div class="row facilities">
+                                    <div class="col col-md-7">
+                                        <ul>
+                                            <li><i class="flaticon-bed"></i></li>
+                                            <li><i class="flaticon-bath"></i></li>
+                                            <li><i class="flaticon-breakfast"></i></li>
+                                            <li><i class="flaticon-towel"></i></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col col-md-5 text-end">
+                                        <div class="permalink"><a href="@item.Url()">Details <i class="ti-arrow-right"></i></a></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="item">
-                        <div class="position-re o-hidden"> <img src="img/rooms/3.jpg" alt=""> </div> <span class="category"><a href="rooms2.html">Book</a></span>
-                        <div class="con">
-                            <h6><a href="room-details.html">250$ / Night</a></h6>
-                            <h5><a href="room-details.html">Double Room</a></h5>
-                            <div class="line"></div>
-                            <div class="row facilities">
-                                <div class="col col-md-7">
-                                    <ul>
-                                        <li><i class="flaticon-bed"></i></li>
-                                        <li><i class="flaticon-bath"></i></li>
-                                        <li><i class="flaticon-breakfast"></i></li>
-                                        <li><i class="flaticon-towel"></i></li>
-                                    </ul>
-                                </div>
-                                <div class="col col-md-5 text-end">
-                                    <div class="permalink"><a href="room-details.html">Details <i class="ti-arrow-right"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item">
-                        <div class="position-re o-hidden"> <img src="img/rooms/4.jpg" alt=""> </div> <span class="category"><a href="rooms2.html">Book</a></span>
-                        <div class="con">
-                            <h6><a href="room-details.html">300$ / Night</a></h6>
-                            <h5><a href="room-details.html">Deluxe Room</a></h5>
-                            <div class="line"></div>
-                            <div class="row facilities">
-                                <div class="col col-md-7">
-                                    <ul>
-                                        <li><i class="flaticon-bed"></i></li>
-                                        <li><i class="flaticon-bath"></i></li>
-                                        <li><i class="flaticon-breakfast"></i></li>
-                                        <li><i class="flaticon-towel"></i></li>
-                                    </ul>
-                                </div>
-                                <div class="col col-md-5 text-end">
-                                    <div class="permalink"><a href="room-details.html">Details <i class="ti-arrow-right"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="item">
-                        <div class="position-re o-hidden"> <img src="img/rooms/7.jpg" alt=""> </div> <span class="category"><a href="rooms2.html">Book</a></span>
-                        <div class="con">
-                            <h6><a href="room-details.html">150$ / Night</a></h6>
-                            <h5><a href="room-details.html">Superior Room</a></h5>
-                            <div class="line"></div>
-                            <div class="row facilities">
-                                <div class="col col-md-7">
-                                    <ul>
-                                        <li><i class="flaticon-bed"></i></li>
-                                        <li><i class="flaticon-bath"></i></li>
-                                        <li><i class="flaticon-breakfast"></i></li>
-                                        <li><i class="flaticon-towel"></i></li>
-                                    </ul>
-                                </div>
-                                <div class="col col-md-5 text-end">
-                                    <div class="permalink"><a href="room-details.html">Details <i class="ti-arrow-right"></i></a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                }
+
             </div>
         </div>
     </section>
+
+}
