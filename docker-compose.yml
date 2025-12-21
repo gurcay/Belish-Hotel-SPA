@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   web:
-    image: https://ghcr.io/gurcay/umbbelish:latest
+    image: ghcr.io/gurcay/umbbelish:latest
     container_name: umbbelish-web
     environment:
       - ASPNETCORE_URLS=http://+:8080
