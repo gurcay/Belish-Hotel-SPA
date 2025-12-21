@@ -37,6 +37,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd root/opt/umbbelish
+            cd /root/opt/umbbelish
             docker compose pull
             docker compose up -d
