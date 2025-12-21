@@ -12,6 +12,7 @@ services:
       - LETSENCRYPT_HOST=belish.gurcaycelikkan.com.tr
       - LETSENCRYPT_EMAIL=admin@gurcaycelikkan.com.tr
       - ASPNETCORE_DETAILEDERRORS=true
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - Logging__LogLevel__Default=Information
       - Logging__LogLevel__Microsoft=Warning
       - Logging__LogLevel__Umbraco=Debug
