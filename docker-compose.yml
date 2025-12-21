@@ -3,16 +3,25 @@ version: "3.9"
 services:
   web:
     image: umbbelish:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
     container_name: umbbelish-web
-    ports:
-      - "8080:8080"
     environment:
-      ASPNETCORE_URLS: http://+:8080
-      ASPNETCORE_ENVIRONMENT: Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Production
+      - VIRTUAL_HOST=belish.gurcaycelikkan.com.tr
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=belish.gurcaycelikkan.com.tr
+      - LETSENCRYPT_EMAIL=admin@gurcaycelikkan.com.tr
+      - ASPNETCORE_DETAILEDERRORS=true
+      - Logging__LogLevel__Default=Information
+      - Logging__LogLevel__Microsoft=Warning
+      - Logging__LogLevel__Umbraco=Debug
     volumes:
       - ./volumes/sqlite:/data
       - ./volumes/media:/app/wwwroot/media
+    networks:
+      - web
     restart: unless-stopped
+
+networks:
+  web:
+    external: true
