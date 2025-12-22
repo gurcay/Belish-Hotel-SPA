@@ -16,6 +16,9 @@ services:
       - Logging__LogLevel__Default=Information
       - Logging__LogLevel__Microsoft=Warning
       - Logging__LogLevel__Umbraco=Debug
+      - Umbraco__CMS__Global__UseHttps=true
+      - VIRTUAL_PROTO=http
+
     volumes:
       - ./volumes/sqlite:/data
       - ./volumes/media:/app/wwwroot/media
@@ -26,3 +29,5 @@ services:
 networks:
   web:
     external: true
+
+
