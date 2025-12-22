@@ -6,6 +6,8 @@
 @{
     var home = Model.AncestorsOrSelf().Last();
     var rooms = home?.ChildrenOfType("roomsRepo")?.FirstOrDefault();
+    var about = home?.ChildrenOfType("about").FirstOrDefault();
+
 }
 
 
