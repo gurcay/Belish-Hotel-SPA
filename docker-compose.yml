@@ -7,20 +7,15 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
-      - VIRTUAL_HOST=belish.gurcaycelikkan.com.tr
-      - VIRTUAL_PORT=8080
-      - LETSENCRYPT_HOST=belish.gurcaycelikkan.com.tr
-      - LETSENCRYPT_EMAIL=admin@gurcaycelikkan.com.tr
       - ASPNETCORE_DETAILEDERRORS=true
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
       - Logging__LogLevel__Default=Information
       - Logging__LogLevel__Microsoft=Warning
       - Logging__LogLevel__Umbraco=Debug
       - Umbraco__CMS__Global__UseHttps=true
-      - VIRTUAL_PROTO=http
 
     volumes:
-      - ./volumes/sqlite:/data
+      - ./volumes/sqlite:/umbraco/data
       - ./volumes/media:/app/wwwroot/media
     networks:
       - web
