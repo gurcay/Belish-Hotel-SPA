@@ -1,7 +1,10 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-	Layout = null;
+    Layout = null;
+    var home = Model.AncestorsOrSelf().Last();
+    var logo = home?.Value<MediaWithCrops>("siteLogo");
 
 }
 
@@ -13,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <!-- HTML Meta Tags -->
     @RenderSection("openGraph", false)
-<!-- Meta Tags Generated via https://www.opengraph.xyz -->
+    <!-- Meta Tags Generated via https://www.opengraph.xyz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400&family=Barlow:wght@400&family=Gilda+Display&display=swap" rel="stylesheet">
@@ -36,7 +39,7 @@
     </div>
     <!-- Menu -->
     <div class="cappa-wrap">
-       @await Html.PartialAsync("Sections/Navigation")
+        @await Html.PartialAsync("Sections/Navigation")
     </div>
     <!-- Logo & Menu Burger -->
     <header class="cappa-header">
@@ -44,14 +47,14 @@
             <div class="row align-items-center">
                 <!-- Logo -->
                 <div class="col-6 col-md-6 cappa-logo-wrap">
-                    <a href="index.html" class="cappa-logo"><img src="img/logo.png" alt=""></a>
+                    <a href="@home.Url()" class="cappa-logo"><img src="@logo?.Url()" alt=""></a>
                 </div>
                 <!-- Menu Burger -->
                 <div class="col-6 col-md-6 text-right cappa-wrap-burger-wrap"> <a href="#" class="cappa-nav-toggle cappa-js-cappa-nav-toggle"><i></i></a> </div>
             </div>
         </div>
     </header>
-   @RenderBody()
+    @RenderBody()
     <!-- Footer -->
     @await Html.PartialAsync("Sections/Footer")
     <!-- End Of Footer -->

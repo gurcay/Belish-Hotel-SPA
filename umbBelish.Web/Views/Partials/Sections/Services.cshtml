@@ -1,80 +1,72 @@
-﻿    <section class="services section-padding">
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var home = Model.AncestorsOrSelf().Last();
+    var services = home?.ChildrenOfType("servicesRepo")?.FirstOrDefault();
+    int i = 0;
+
+}
+
+@if(services != null)
+{
+        <section class="services section-padding">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 p-0 animate-box" data-animate-effect="fadeInLeft">
-                    <div class="img left">
-                        <a href="restaurant.html"><img src="img/restaurant/1.jpg" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-md-6 p-0 bg-darkblack valign animate-box" data-animate-effect="fadeInRight">
-                    <div class="content">
-                        <div class="cont text-left">
-                            <div class="info">
-                                <h6>Discover</h6>
+            @foreach(var item in services.Children())
+            {
+                i++;
+                var images = item?.Value<IEnumerable<MediaWithCrops>>("pageImages");
+                var imageList = images?.ToList();
+                if(i % 2 == 1)
+                {
+                    <div class="row">
+                        <div class="col-md-6 p-0 animate-box" data-animate-effect="fadeInLeft">
+                            <div class="img left">
+                                <a href="@item.Url()"><img src="@imageList?.ElementAtOrDefault(0)?.Url()" alt=""></a>
                             </div>
-                            <h4>The Restaurant</h4>
-                            <p>Restaurant inilla duiman at elit finibus viverra nec a lacus themo the nesudea seneoice misuscipit non sagie the fermen ziverra tristiue duru the ivite dianne onen nivami acsestion augue artine.</p>
-                            <div class="butn-dark"> <a href="restaurant.html"><span>Learn More</span></a> </div>
+                        </div>
+                        <div class="col-md-6 p-0 bg-darkblack valign animate-box" data-animate-effect="fadeInRight">
+                            <div class="content">
+                                <div class="cont text-left">
+                                    <div class="info">
+                                        <h6>@item.Value("pageSubtitle")</h6>
+                                    </div>
+                                    <h4>@item.Value("pageTitle")</h4>
+                                    @Html.Raw(item.Value("pageText"))
+                                    <div class="butn-dark"> <a href="@item.Url()"><span>Devamı</span></a> </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 bg-darkblack p-0 order2 valign animate-box" data-animate-effect="fadeInLeft">
-                    <div class="content">
-                        <div class="cont text-left">
-                            <div class="info">
-                                <h6>Experiences</h6>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-md-6 bg-darkblack p-0 order2 valign animate-box" data-animate-effect="fadeInLeft">
+                            <div class="content">
+                                <div class="cont text-left">
+                                    <div class="info">
+                                        <h6>@item.Value("pageSubtitle")</h6>
+                                    </div>
+                                    <h4>@item.Value("pageTitle")</h4>
+                                    @Html.Raw(item.Value("pageText"))
+                                    <div class="butn-dark"> <a href="@item.Url()"><span>Devamı</span></a> </div>
+                                </div>
                             </div>
-                            <h4>Spa Center</h4>
-                            <p>Spa center inilla duiman at elit finibus viverra nec a lacus themo the nesudea seneoice misuscipit non sagie the fermen ziverra tristiue duru the ivite dianne onen nivami acsestion augue artine.</p>
-                            <div class="butn-dark"> <a href="spa-wellness.html"><span>Learn More</span></a> </div>
+                        </div>
+                        <div class="col-md-6 p-0 order1 animate-box" data-animate-effect="fadeInRight">
+                            <div class="img">
+                                <a href="@item.Url()"><img src="@imageList?.ElementAtOrDefault(0)?.Url()" alt=""></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 p-0 order1 animate-box" data-animate-effect="fadeInRight">
-                    <div class="img">
-                        <a href="spa-wellness.html"><img src="img/spa/3.jpg" alt=""></a>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 p-0 animate-box" data-animate-effect="fadeInLeft">
-                    <div class="img left">
-                        <a href="spa-wellness.html"><img src="img/spa/2.jpg" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-md-6 p-0 bg-darkblack valign animate-box" data-animate-effect="fadeInRight">
-                    <div class="content">
-                        <div class="cont text-left">
-                            <div class="info">
-                                <h6>Modern</h6>
-                            </div>
-                            <h4>Fitness Center</h4>
-                            <p>Restaurant inilla duiman at elit finibus viverra nec a lacus themo the nesudea seneoice misuscipit non sagie the fermen ziverra tristiue duru the ivite dianne onen nivami acsestion augue artine.</p>
-                            <div class="butn-dark"> <a href="spa-wellness.html"><span>Learn More</span></a> </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 bg-darkblack p-0 order2 valign animate-box" data-animate-effect="fadeInLeft">
-                    <div class="content">
-                        <div class="cont text-left">
-                            <div class="info">
-                                <h6>Experiences</h6>
-                            </div>
-                            <h4>The Health Club & Pool</h4>
-                            <p>The health club & pool at elit finibus viverra nec a lacus themo the nesudea seneoice misuscipit non sagie the fermen ziverra tristiue duru the ivite dianne onen nivami acsestion augue artine.</p>
-                            <div class="butn-dark"> <a href="spa-wellness.html"><span>Learn More</span></a> </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 p-0 order1 animate-box" data-animate-effect="fadeInRight">
-                    <div class="img">
-                        <a href="spa-wellness.html"><img src="img/spa/1.jpg" alt=""></a>
-                    </div>
-                </div>
-            </div>
+                }
+
+            }
+        
         </div>
     </section>
+
+}
