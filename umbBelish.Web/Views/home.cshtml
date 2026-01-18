@@ -1,10 +1,12 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 
     Layout = "main.cshtml";
 
     var home = Model.AncestorsOrSelf().Last();
+    var favicon = home?.Value<MediaWithCrops>("siteFavicon");
 
 }
 
@@ -16,7 +18,7 @@
     <title>@home.Value("pageTitle")</title>
     <meta name="description" content="@home.Value("pageText")">
     <meta name="author" content="@home.Name">
-    <link rel="icon" href="/img/favicon.png" type="image/png" sizes="32x32">
+    <link rel="icon" href="@favicon?.Url()" type="image/png" sizes="32x32">
     <meta name="robots" content="index, follow">
 
     <!-- Facebook Meta Tags -->
@@ -24,7 +26,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="@home.Value("pageTitle")">
     <meta property="og:description" content="@home.Value("pageText")">
-    <meta property="og:image" content="https://w1-fa.cdn.smule.com/assets/icons/facebook_share-9be2d7093a7a5dbbf9784f28a97cb4fe.jpg">
+    <meta property="og:image" content="@favicon?.Url()">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
@@ -32,7 +34,7 @@
     <meta property="twitter:url" content="@home.Url()">
     <meta name="twitter:title" content="@home.Value("pageTitle")">
     <meta name="twitter:description" content="@home.Value("pageText")">
-    <meta name="twitter:image" content="https://w1-fa.cdn.smule.com/assets/icons/facebook_share-9be2d7093a7a5dbbf9784f28a97cb4fe.jpg">
+    <meta name="twitter:image" content="@favicon?.Url()">
 
 }
 

@@ -25,7 +25,7 @@
                         {
                             var title = item.Value("pageTitle");
                             var subtitle = item.Value("pageSubtitle");
-                            var imageFirst = item.Value<IEnumerable<MediaWithCrops>>("pageImages")?.First()?.Url();
+                            var imageFirst = item.Value<IEnumerable<MediaWithCrops>>("pageImages")?.First()?.GetCropUrl("244px");
                             <div class="item">
                                 <div class="position-re o-hidden">
                                     <img src="@imageFirst" alt="">

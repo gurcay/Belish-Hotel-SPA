@@ -24,7 +24,7 @@
                     <div class="row">
                         <div class="col-md-6 p-0 animate-box" data-animate-effect="fadeInLeft">
                             <div class="img left">
-                                <a href="@item.Url()"><img src="@imageList?.ElementAtOrDefault(0)?.Url()" alt=""></a>
+                                <a href="@item.Url()"><img src="@imageList?.ElementAtOrDefault(0)?.GetCropUrl("380px")" alt=""></a>
                             </div>
                         </div>
                         <div class="col-md-6 p-0 bg-darkblack valign animate-box" data-animate-effect="fadeInRight">

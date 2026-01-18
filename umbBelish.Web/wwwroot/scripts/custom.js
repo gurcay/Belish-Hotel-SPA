@@ -46,38 +46,7 @@ $(function () {
         topOffset: -70 // offste (in px) for fixed top navigation
     });
     
-    
-    // Logo & Menu scroll sticky
-    $(window).scroll(function () {
-        var $this = $(this)
-            , st = $this.scrollTop()
-            , navbar = $('.cappa-header')
-            , logo = $(".cappa-header .cappa-logo> img");
-        if (st > 150) {
-            if (!navbar.hasClass('scrolled')) {
-                navbar.addClass('scrolled');
-                logo.attr('src', 'img/logo.png');
-            }
-        }
-        if (st < 150) {
-            if (navbar.hasClass('scrolled')) {
-                navbar.removeClass('scrolled sleep')
-                logo.attr('src', 'img/logo.png');
-            }
-        }
-        if (st > 350) {
-            if (!navbar.hasClass('awake')) {
-                navbar.addClass('awake');
-            }
-        }
-        if (st < 350) {
-            if (navbar.hasClass('awake')) {
-                navbar.removeClass('awake');
-                navbar.addClass('sleep');
-            }
-        }
-    });
-    
+        
 
     // Menu Navigation    
     $('.cappa-js-cappa-nav-toggle').on('click', function (e) {
@@ -555,6 +524,38 @@ $(function () {
     
     
     // Datapicker
+    var lang = (navigator.language || navigator.userLanguage || "").toLowerCase();
+
+    // Sayfanin dilini HTML'den oku: <html lang="tr-TR">
+    var pageLang = (document.documentElement.getAttribute("lang") || "").toLowerCase();
+
+    if (pageLang.startsWith("tr")) {
+
+        // TURKCE
+        $.datepicker.setDefaults({
+            dateFormat: "dd/mm/yy",
+            firstDay: 1,
+            closeText: "Kapat",
+            prevText: "Önceki",
+            nextText: "Sonraki",
+            currentText: "Bugün",
+            monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            monthNamesShort: ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"],
+            dayNames: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            dayNamesShort: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
+            dayNamesMin: ["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"],
+            weekHeader: "Hf"
+        });
+
+    } else {
+
+        // ENGLISH
+        $.datepicker.setDefaults({
+            dateFormat: "mm/dd/yy",
+            firstDay: 0
+        });
+
+    }
     $(".datepicker").datepicker({
         orientation: "top"
     });

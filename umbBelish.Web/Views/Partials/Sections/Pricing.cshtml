@@ -37,7 +37,7 @@
                             foreach(var item in extraservicesList)
                             {
                                 var service = item.Content;
-                                var img = service.Value<MediaWithCrops>("image")?.Url();
+                                var img = service.Value<MediaWithCrops>("image")?.GetCropUrl("202px");
                                 var specs = service.Value<IEnumerable<BlockListItem>>("specs");
                                 <div class="pricing-card">
                                     <img src="@img" alt="">
