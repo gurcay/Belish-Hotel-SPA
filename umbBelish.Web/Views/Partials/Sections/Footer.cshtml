@@ -11,18 +11,29 @@
     var email = contact?.Value("eMail");
     var phone = contact?.Value("phone");
     var adres = contact?.Value("adres");
+    var html = about?.Value<string>("pageText");
+
+    string firstParagraph = "";
+
+    if (!string.IsNullOrWhiteSpace(html) && html.Contains("</p>"))
+    {
+        firstParagraph = html.Substring(0, html.IndexOf("</p>") + 4);
+    }
 }
 
 <footer class="footer">
         <div class="footer-top">
             <div class="container">
                 <div class="row">
+                    @if(about != null)
+                    {
                     <div class="col-md-4">
                         <div class="footer-column footer-about">
                             <h3 class="footer-title">@about?.Name</h3>
-                            <p class="footer-about-text">Welcome to the best five-star deluxe hotel in New York. Hotel elementum sesue the aucan vestibulum aliquam justo in sapien rutrum volutpat.</p>
+                            <p class="footer-about-text">@Html.Raw(firstParagraph)</p>
 
-                            <div class="footer-language"> <i class="lni ti-world"></i>
+                            <div class="footer-language">
+                                <i class="lni ti-world"></i>
                                 <select onchange="location = this.value;">
                                     <option value="http://duruthemes.com/">English</option>
                                     <option value="http://duruthemes.com/">German</option>
@@ -30,18 +41,22 @@
                             </div>
                         </div>
                     </div>
+                    }
+                    @if(home.Children().Any())
+                    {
                     <div class="col-md-3 offset-md-1">
                         <div class="footer-column footer-explore clearfix">
-                            <h3 class="footer-title">Explore</h3>
+                            <h3 class="footer-title">Menü</h3>
                             <ul class="footer-explore-list list-unstyled">
-                                <li><a href="index.html">Home</a></li>
-                            @foreach (var item in home.Children().Where(j => j.ContentType.Alias != "contactPage"))
+                                <li><a href="@home.Url()">@home.Name</a></li>
+                                @foreach (var item in home.Children().Where(j => j.ContentType.Alias != "contactPage"))
                                 {
-                                <li><a href="@item.Url()">@item.Name</a></li>
+                                    <li><a href="@(Model.Name == home.Name ? (home.Url()+"#"+ item.Name.ToString().ToLower().Replace(" ","-")): item.Url())">@item.Name</a></li>
                                 }
                             </ul>
                         </div>
                     </div>
+                    }
                     <div class="col-md-4">
                         @if(adres != "" || phone != "" || email != "")
                                    {
@@ -86,7 +101,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="footer-bottom-inner">
-                            <p class="footer-bottom-copy-right">© Copyright 2025 by <a href="#">DuruThemes.com</a></p>
+                            <p class="footer-bottom-copy-right">© Copyright @DateTime.Now.Year by <a href="#">@home.Value("pageTitle")</a></p>
                         </div>
                     </div>
                 </div>

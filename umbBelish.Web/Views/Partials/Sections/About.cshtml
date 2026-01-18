@@ -6,6 +6,7 @@
 @{
     var home = Model.AncestorsOrSelf().Last();
     var about = home.ChildrenOfType("about").FirstOrDefault();
+    var contact = home.ChildrenOfType("contactPage")?.FirstOrDefault();
     var images = about?.Value<IEnumerable<MediaWithCrops>>("pageImages");
     var imageList = images?.ToList();
 
@@ -33,7 +34,7 @@
                         <div class="reservations">
                             <div class="icon"><span class="flaticon-call"></span></div>
                             <div class="text">
-                                <p>Reservation</p> <a href="tel:@about.Value("pagePhone")">@about.Value("pagePhone")</a>
+                                <p>Reservation</p> <a href="tel:@contact?.Value("phone")">@contact?.Value("phone")</a>
                             </div>
                         </div>
                     }
