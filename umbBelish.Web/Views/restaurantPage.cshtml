@@ -1,0 +1,132 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+
+    Layout = "main.cshtml";
+    var carousel = Model.Value<IEnumerable<MediaWithCrops>>("pageImages");
+
+    var menu = Model.Value<IEnumerable<BlockListItem>>("restaurantMenu");
+
+    int i = 0;
+    int j = 0;
+    int k = 0;
+
+}
+
+
+
+@if(carousel != null && carousel.Any())
+{
+    <!-- Restaurant Slider -->
+    <header class="header slider">
+        <div class="owl-carousel owl-theme">
+            <!-- The opacity on the image is made with "data-overlay-dark="number". You can change it using the numbers 0-9. -->
+            @foreach(var item in carousel)
+            {
+                <div class="text-center item bg-img" data-overlay-dark="5" data-background="@item.Url()"></div>
+            }
+        </div>
+        <!-- arrow down -->
+        <div class="arrow bounce text-center">
+            <a href="#" data-scroll-nav="1" class=""> <i class="ti-arrow-down"></i> </a>
+        </div>
+    </header>
+}
+<!-- Restaurant Content -->
+    <section class="rooms-page section-padding" data-scroll-index="1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-left"> 
+                    <span>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                    </span>
+                    <div class="section-subtitle">@Model.Value("pageSubtitle")</div>
+                    <div class="section-title">@Model.Value("pageTitle")</div>
+                </div>
+                <div class="col-md-12">
+                    @Html.Raw(Model.Value("pageText"))
+                </div>
+            </div>
+        </div>
+    </section>
+@if(menu != null)
+{
+    <!-- Restaurant Menu -->
+    <section id="menu" class="restaurant-menu menu section-padding bg-darkblack">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="section-subtitle"><span>Luxury Hotel</span></div>
+                    <div class="section-title">Restaurant Menu</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="tabs-icon col-md-10 offset-md-1 text-center">
+                            <div class="owl-carousel owl-theme">
+                                @foreach(var item in menu)
+                                {
+                                    i++;
+                                    var menuCat = item.Content.Value("menuCategory");
+                                    <div id="@menuCat?.ToString().ToLower()" class="@(menuCat == menu.FirstOrDefault()?.Content.Value("menuCategory") ? "active" : "") item">
+                                        <h6>@menuCat</h6>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="restaurant-menu-content col-md-12">
+                         @foreach(var menuContent in menu)
+                         {
+                             <!-- Starters -->
+                            <div id="@menuContent.Content.Value("menuCategory")?.ToString().ToLower()" class="cont active">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                    @foreach(var item in menu)
+                                    {
+                                        j++;
+                                        var content = item.Content;
+                                        if(j <= menu.Count() /2)
+                                        {
+                                        <div class="menu-info">
+                                            <h5>@content.Value("dishTitle") <span class="price">@content.Value("dishPrice")</span></h5>
+                                            <p>@content.Value("dishText")</p>
+                                        </div>
+                                        }
+
+                                    }
+                                    </div>
+                                    @if(menu.Count() > 4)
+                                    {
+                                        <div class="col-md-5 offset-md-2">
+                                            @foreach (var item in menu)
+                                            {
+                                                k++;
+                                                if(j > menu.Count() /2)
+                                                {
+                                        <div class="menu-info">
+                                            <h5>@item.Content.Value("dishTitle") <span class="price">@item.Content.Value("dishPrice")</span></h5>
+                                            <p>@item.Content.Value("dishText")</p>
+                                        </div>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                         }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
