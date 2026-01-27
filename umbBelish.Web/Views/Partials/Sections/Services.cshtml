@@ -1,5 +1,7 @@
-﻿@using Umbraco.Cms.Core.Models
+﻿@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Strings
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
@@ -19,6 +21,10 @@
                 i++;
                 var images = item?.Value<IEnumerable<MediaWithCrops>>("pageImages");
                 var imageList = images?.ToList();
+                var rte= item?.Value<IHtmlEncodedString>("pageText");
+                var html = rte?.ToHtmlString() ?? "";
+                var firstP = Regex.Match(html, @"<p\b[^>]*>.*?</p>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
                 if(i % 2 == 1)
                 {
                     <div class="row">
@@ -34,7 +40,7 @@
                                         <h6>@item.Value("pageSubtitle")</h6>
                                     </div>
                                     <h4>@item.Value("pageTitle")</h4>
-                                    @Html.Raw(item.Value("pageText"))
+                                    @Html.Raw(firstP.Value)
                                     <div class="butn-dark"> <a href="@item.Url()"><span>Devamı</span></a> </div>
                                 </div>
                             </div>
@@ -51,7 +57,7 @@
                                         <h6>@item.Value("pageSubtitle")</h6>
                                     </div>
                                     <h4>@item.Value("pageTitle")</h4>
-                                    @Html.Raw(item.Value("pageText"))
+                                    @Html.Raw(firstP.Value)
                                     <div class="butn-dark"> <a href="@item.Url()"><span>Devamı</span></a> </div>
                                 </div>
                             </div>

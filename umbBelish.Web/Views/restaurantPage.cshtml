@@ -1,4 +1,5 @@
-﻿@using Umbraco.Cms.Core.Models
+﻿@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks
 @using Umbraco.Cms.Web.Common.PublishedModels;
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
@@ -6,12 +7,36 @@
 
     Layout = "main.cshtml";
     var carousel = Model.Value<IEnumerable<MediaWithCrops>>("pageImages");
+    var home = Model.AncestorsOrSelf().Last();
+    var favicon = home?.Value<MediaWithCrops>("siteFavicon");
+    var menu = Model.Value<IEnumerable<BlockListItem>>("restaurantMenu")?.ToList() ?? new();
+    var tabIndex = 0;
 
-    var menu = Model.Value<IEnumerable<BlockListItem>>("restaurantMenu");
+}
 
-    int i = 0;
-    int j = 0;
-    int k = 0;
+@section openGraph
+{
+
+    <title>@Model.Value("pageTitle")</title>
+    <meta name="description" content="@Model.Value("pageSubtitle")">
+    <meta name="author" content="@Model.Name">
+    <link rel="icon" href="@favicon?.Url()" type="image/png" sizes="32x32">
+    <meta name="robots" content="index, follow">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="@Model.Url()">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@Model.Value("pageTitle")">
+    <meta property="og:description" content="@Model.Value("pageSubtitle")">
+    <meta property="og:image" content="@favicon?.Url()">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="belishankara.com">
+    <meta property="twitter:url" content="@Model.Url()">
+    <meta name="twitter:title" content="@Model.Value("pageTitle")">
+    <meta name="twitter:description" content="@Model.Value("pageSubtitle")">
+    <meta name="twitter:image" content="@favicon?.Url()">
 
 }
 
@@ -67,63 +92,65 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="tabs-icon col-md-10 offset-md-1 text-center">
-                            <div class="owl-carousel owl-theme">
-                                @foreach(var item in menu)
-                                {
-                                    i++;
-                                    var menuCat = item.Content.Value("menuCategory");
-                                    <div id="@menuCat?.ToString().ToLower()" class="@(menuCat == menu.FirstOrDefault()?.Content.Value("menuCategory") ? "active" : "") item">
-                                        <h6>@menuCat</h6>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                        <div class="restaurant-menu-content col-md-12">
-                         @foreach(var menuContent in menu)
-                         {
-                             <!-- Starters -->
-                            <div id="@menuContent.Content.Value("menuCategory")?.ToString().ToLower()" class="cont active">
-                                <div class="row">
-                                    <div class="col-md-5">
-                                    @foreach(var item in menu)
-                                    {
-                                        j++;
-                                        var content = item.Content;
-                                        if(j <= menu.Count() /2)
-                                        {
-                                        <div class="menu-info">
-                                            <h5>@content.Value("dishTitle") <span class="price">@content.Value("dishPrice")</span></h5>
-                                            <p>@content.Value("dishText")</p>
-                                        </div>
-                                        }
+                <div class="tabs-icon col-md-10 offset-md-1 text-center">
+                    <div class="owl-carousel owl-theme">
+                        @foreach (var cat in menu)
+                        {
+                            tabIndex++;
+                            var tabId = $"tab-{tabIndex}";
+                            var contentId = $"{tabId}-content";
+                            var title = cat.Content.Value<string>("menuCategory");
 
-                                    }
-                                    </div>
-                                    @if(menu.Count() > 4)
+                            <div class="item @(tabIndex == 1 ? "active" : "")"
+                                 id="@tabId"
+                                 data-target="#@contentId">
+                                <h6>@title</h6>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="restaurant-menu-content col-md-12">
+                    @{
+                        tabIndex = 0;
+                    }
+                    @foreach (var cat in menu)
+                    {
+                        tabIndex++;
+                        var tabId = $"tab-{tabIndex}";
+                        var contentId = $"{tabId}-content";
+
+                        var items = cat.Content.Value<IEnumerable<BlockListItem>>("menuItems")?.ToList()
+                        ?? new List<BlockListItem>();
+
+                        var half = (items.Count + 1) / 2;
+
+                        <div id="@contentId" class="cont @(tabIndex == 1 ? "active" : "")">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @foreach (var bi in items.Take(half))
                                     {
-                                        <div class="col-md-5 offset-md-2">
-                                            @foreach (var item in menu)
-                                            {
-                                                k++;
-                                                if(j > menu.Count() /2)
-                                                {
+                                        var c = bi.Content;
                                         <div class="menu-info">
-                                            <h5>@item.Content.Value("dishTitle") <span class="price">@item.Content.Value("dishPrice")</span></h5>
-                                            <p>@item.Content.Value("dishText")</p>
+                                            <h5>@c.Value("dishTitle") <span class="price">@c.Value("dishPrice")</span></h5>
+                                            <p>@c.Value("dishText")</p>
                                         </div>
-                                                }
-                                            }
+                                    }
+                                </div>
+
+                                <div class="col-md-6">
+                                    @foreach (var bi in items.Skip(half))
+                                    {
+                                        var c = bi.Content;
+                                        <div class="menu-info">
+                                            <h5>@c.Value("dishTitle") <span class="price">@c.Value("dishPrice")</span></h5>
+                                            <p>@c.Value("dishText")</p>
                                         </div>
                                     }
                                 </div>
                             </div>
-                         }
-
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
