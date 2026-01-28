@@ -1,0 +1,179 @@
+﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "main.cshtml";
+    var home = Model.AncestorsOrSelf().Last();
+    var rooms = Model.Children();
+    var image = Model.Value<MediaWithCrops>("image")?.Url();
+    var favicon = home?.Value<MediaWithCrops>("siteFavicon");
+    var extra = home?.ChildrenOfType("extraServices").FirstOrDefault();
+    var extraservicesList = extra?.Value<IEnumerable<BlockListItem>>("extraservicesList");
+    var about = home?.ChildrenOfType("about").FirstOrDefault();
+
+
+}
+
+@section openGraph
+{
+
+    <title>@Model.Value("pageTitle")</title>
+    <meta name="description" content="@Model.Value("pageSubtitle")">
+    <meta name="author" content="@Model.Name">
+    <link rel="icon" href="@favicon?.Url()" type="image/png" sizes="32x32">
+    <meta name="robots" content="index, follow">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="@Model.Url()">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@Model.Value("pageTitle")">
+    <meta property="og:description" content="@Model.Value("pageSubtitle")">
+    <meta property="og:image" content="@favicon?.Url()">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="belishankara.com">
+    <meta property="twitter:url" content="@Model.Url()">
+    <meta name="twitter:title" content="@Model.Value("pageTitle")">
+    <meta name="twitter:description" content="@Model.Value("pageSubtitle")">
+    <meta name="twitter:image" content="@favicon?.Url()">
+
+}
+
+
+@if (Model.HasValue(("pageTitle")))
+{
+        <!-- Header Banner -->
+    <div class="banner-header section-padding valign bg-img bg-fixed" data-overlay-dark="5" data-background="@image">
+        <div class="container">
+            <div class="row">
+				<div class="col-md-12 caption mt-90">
+				    <span>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                    </span>
+					<h5>@home?.Value(("pageTitle"))</h5>
+					<h1>@Model.Value(("pageTitle"))</h1>
+				</div>
+			</div>
+        </div>
+    </div>
+}
+
+
+@if(rooms != null && rooms.Any())
+{
+    <section class="rooms1 section-padding" data-scroll-index="1">
+        <div class="container">
+            <div class="row">
+                @foreach(var item in rooms.Where(j=> j.Value<string>("layout") != "Yatay"))
+                {
+                    var img = item.Value<IEnumerable<MediaWithCrops>>("roomImages");
+                    <div class="col-md-4">
+                        <div class="item">
+                            <div class="position-re o-hidden"> <img src="@img?.FirstOrDefault()?.Url()" alt=""> </div> <span class="category"><a href="@item.Url()">Book</a></span>
+                            <div class="con">
+                                <h6><a href="@item.Url()">@item.Value("roomPrice")</a></h6>
+                                <h5><a href="@item.Url()">@item.Value("roomName")</a> </h5>
+                                <div class="line"></div>
+                                <div class="row facilities">
+                                    <div class="col col-md-7">
+                                    </div>
+                                    <div class="col col-md-5 text-end">
+                                        <div class="permalink"><a href="@item.Url()">Details <i class="ti-arrow-right"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (rooms.Where(j => j.Value<string>("layout") == "Yatay").Any())
+                {
+                    <div class="col-md-4">
+                        @foreach (var item in rooms.Where(j => j.Value<string>("layout") == "Yatay"))
+                        {
+                            var img = item.Value<IEnumerable<MediaWithCrops>>("roomImages");
+                            <div class="item">
+                                <div class="position-re o-hidden"> <img src="@img?.FirstOrDefault()?.Url()" alt=""> </div> <span class="category"><a href="@item.Url()">Book</a></span>
+                                <div class="con">
+                                    <h6><a href="@item.Url()">@item.Value("roomPrice")</a></h6>
+                                    <h5><a href="@item.Url()">@item.Value("roomName")</a> </h5>
+                                    <div class="line"></div>
+                                    <div class="row facilities">
+                                        <div class="col col-md-7">
+                                        </div>
+                                        <div class="col col-md-5 text-end">
+                                            <div class="permalink"><a href="@item.Url()">Details <i class="ti-arrow-right"></i></a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+}
+
+@if (extra != null)
+{
+    <section class="pricing section-padding bg-darkblack">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="section-subtitle"><span>@extra.Value("pageTitle")</span></div>
+                    <div class="section-title">@extra.Value("pageText")</div>
+                    @Html.Raw(extra.Value("pageTextEditor"))
+                    @if (about != null && about.HasValue("pagePhone"))
+                    {
+                        <div class="reservations mb-30">
+                            <div class="icon"><span class="flaticon-call"></span></div>
+                            <div class="text">
+                                <p class="color-2">For information</p><a href="tel:@about.Value("pagePhone")">@about.Value("pagePhone")</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-8">
+                    <div class="owl-carousel owl-theme">
+                        @if (extraservicesList != null)
+                        {
+                            foreach (var item in extraservicesList)
+                            {
+                                var service = item.Content;
+                                var img = service.Value<MediaWithCrops>("image")?.GetCropUrl("202px");
+                                var specs = service.Value<IEnumerable<BlockListItem>>("specs");
+                                <div class="pricing-card">
+                                    <img src="@img" alt="">
+                                    <div class="desc">
+                                        <div class="name">@service.Value("title")</div>
+                                        <div class="amount">@service.Value("fee")</div>
+                                        <ul class="list-unstyled list">
+                                            @if (specs != null)
+                                            {
+                                                foreach (var specitem in specs)
+                                                {
+                                                    var spec = specitem.Content;
+                                                    var trueFalse = spec.Value<bool>("trueFalse");
+                                                    <li><i class="@(!trueFalse ? "ti-close unavailable" : "ti-check")"></i>@spec.Value("text")</li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}

@@ -1,0 +1,130 @@
+﻿@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+
+
+
+    Layout = "main.cshtml";
+    var carousel = Model.Value<IEnumerable<MediaWithCrops>>("pageImages");
+    var home = Model.AncestorsOrSelf().Last();
+    var favicon = home?.Value<MediaWithCrops>("siteFavicon");
+    var faq = Model.Value<IEnumerable<BlockListItem>>("faqList");
+
+    var bookNumber = Model.Value("bookNumber");
+    var tabIndex = 0;
+
+}
+
+@section openGraph
+{
+
+    <title>@Model.Value("pageTitle")</title>
+    <meta name="description" content="@Model.Value("pageSubtitle")">
+    <meta name="author" content="@Model.Name">
+    <link rel="icon" href="@favicon?.Url()" type="image/png" sizes="32x32">
+    <meta name="robots" content="index, follow">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="@Model.Url()">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@Model.Value("pageTitle")">
+    <meta property="og:description" content="@Model.Value("pageSubtitle")">
+    <meta property="og:image" content="@favicon?.Url()">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="belishankara.com">
+    <meta property="twitter:url" content="@Model.Url()">
+    <meta name="twitter:title" content="@Model.Value("pageTitle")">
+    <meta name="twitter:description" content="@Model.Value("pageSubtitle")">
+    <meta name="twitter:image" content="@favicon?.Url()">
+
+}
+
+
+
+@if(carousel != null && carousel.Any())
+{
+    <!-- Restaurant Slider -->
+    <header class="header slider">
+        <div class="owl-carousel owl-theme">
+            <!-- The opacity on the image is made with "data-overlay-dark="number". You can change it using the numbers 0-9. -->
+            @foreach(var item in carousel)
+            {
+                <div class="text-center item bg-img" data-overlay-dark="5" data-background="@item.Url()"></div>
+            }
+        </div>
+        <!-- arrow down -->
+        <div class="arrow bounce text-center">
+            <a href="#" data-scroll-nav="1" class=""> <i class="ti-arrow-down"></i> </a>
+        </div>
+    </header>
+}
+<!-- Restaurant Content -->
+    <section class="rooms-page section-padding" data-scroll-index="1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-left"> 
+                    <span>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                    </span>
+                    <div class="section-subtitle">@Model.Value("pageSubtitle")</div>
+                    <div class="section-title">@Model.Value("pageTitle")</div>
+                </div>
+                <div class="col-md-12">
+                    @Html.Raw(Model.Value("pageText"))
+                </div>
+                @if(bookNumber != null)
+                {
+                <div class="col-md-12">
+                    <div class="reservations">
+                        <div class="icon"><span class="flaticon-call"></span></div>
+                        <div class="text">
+                            <p>@Umbraco.GetDictionaryValue("featuresPage.Booking")</p> <a href="tel:@bookNumber">@bookNumber</a>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </section>
+@if(faq != null)
+{
+<!-- Faqs -->
+    <section class="section-padding bg-darkblack">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-subtitle">@Model.Value("pageSubtitle")</div>
+                    <div class="section-title">@Umbraco.GetDictionaryValue("featuresPage.Faq")</div>
+                </div>
+                <div class="col-md-12">
+                    <ul class="accordion-box clearfix">
+                        @foreach(var item in faq)
+                        {
+                            var content = item.Content;
+                            <li class="accordion block">
+                                <div class="acc-btn">@content.Value("question")</div>
+                                <div class="acc-content">
+                                    <div class="content">
+                                        <div class="text">@content.Value("answer")</div>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testiominals -->
+
+}
