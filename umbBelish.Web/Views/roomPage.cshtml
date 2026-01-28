@@ -1,0 +1,214 @@
+﻿@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "main.cshtml";
+    var carousel = Model.Value<IEnumerable<MediaWithCrops>>("roomImages");
+    var home = Model.AncestorsOrSelf().Last();
+    var favicon = home?.Value<MediaWithCrops>("siteFavicon");
+    var rooms = home?.ChildrenOfType("roomsRepo")?.FirstOrDefault();
+
+
+
+    // 1) Multiple dropdown değerlerini oku (Umbraco çoğunlukla IEnumerable<string> döner)
+    var amenities = (Model.Value<IEnumerable<string>>("roomAtributes") ?? Enumerable.Empty<string>())
+        .Select(x => x?.Trim())
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .ToList();
+
+    // Bazı kurulumlarda tek string (virgüllü) gelebilir diye fallback:
+    if (!amenities.Any())
+    {
+        var raw = Model.Value<string>("roomAtributes");
+        if (!string.IsNullOrWhiteSpace(raw))
+        {
+            amenities = raw
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToList();
+        }
+    }
+
+    // 2) Değer -> ikon CSS class eşlemesi
+    var iconByAmenity = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["1 - 2 Kişi Sayısı"] = "flaticon-group",
+        ["2 - 4 Kişi Sayısı"] = "flaticon-team",
+        ["Ücretli Kablosuz Ağ"] = "flaticon-wifi",
+        ["Ücretsiz Kablosuz Ağ"] = "flaticon-wifi",
+        ["Kahvaltı"] = "flaticon-breakfast",
+        ["Öğle Yemeği"] = "flaticon-serving-dish",
+        ["Akşam Yemeği"] = "flaticon-serving-dish",
+        ["Günlük Havlu"] = "flaticon-towel",
+        ["Havuz"] = "flaticon-swimming",
+        ["Spor Salonu"] = "flaticon-teamwork" // kütüphanede spor ikonu yoksa en yakın alternatif
+    };
+
+    string GetIcon(string key) =>
+        iconByAmenity.TryGetValue(key ?? "", out var css) ? css : "flaticon-checklist"; // default
+}
+
+@section openGraph
+{
+
+    <title>@home?.Value(("pageTitle")) - @Model.Parent()?.Name: @Model.Value("roomName")</title>
+    <meta name="description" content="@home?.Value(("pageTitle")) - @Model.Parent()?.Name: @Model.Value("roomName")">
+    <meta name="author" content="@Model.Name">
+    <link rel="icon" href="@favicon?.Url()" type="image/png" sizes="32x32">
+    <meta name="robots" content="index, follow">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="@("belishankara.com" + Model.Url())">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@Model.Parent()?.Name: @Model.Value("roomName")">
+    <meta property="og:description" content="@home?.Value(("pageTitle"))">
+    <meta property="og:image" content="@favicon?.Url()">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="belishankara.com">
+    <meta property="twitter:url" content="@("belishankara.com" + Model.Url())">
+    <meta name="twitter:title" content="@Model.Value("roomName")">
+    <meta name="twitter:description" content="@home?.Value(("pageTitle")) - @Model.Parent()?.Name: @Model.Value("roomName")">
+    <meta name="twitter:image" content="@favicon?.Url()">
+
+}
+
+<style>
+    p{
+        margin-bottom:2em;
+    }
+
+    p strong{
+        position: relative;
+        font-family: 'Gilda Display', serif;
+        font-size: 24px;
+        color: #fff;
+        font-weight: normal !important;
+    }
+</style>
+
+@if(carousel != null && carousel.Any())
+{
+    <!-- Rooom Slider -->
+    <header class="header slider">
+        <div class="owl-carousel owl-theme">
+            <!-- The opacity on the image is made with "data-overlay-dark="number". You can change it using the numbers 0-9. -->
+            @foreach(var item in carousel)
+            {
+                <div class="text-center item bg-img" data-overlay-dark="5" data-background="@item.Url()"></div>
+            }
+        </div>
+        <!-- arrow down -->
+        <div class="arrow bounce text-center">
+            <a href="#" data-scroll-nav="1" class=""> <i class="ti-arrow-down"></i> </a>
+        </div>
+    </header>
+}
+    <!-- Room Content -->
+    <section class="rooms-page section-padding" data-scroll-index="1">
+        <div class="container">
+            <!-- project content -->
+            <div class="row">
+                <div class="col-md-12"> 
+                    <span>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                        <i class="star-rating"></i>
+                    </span>
+                    <div class="section-subtitle">@home?.Value(("pageTitle"))</div>
+                    <div class="section-title">@Model.Value(("pageTitle"))</div>
+                </div>
+                <div class="col-md-8">
+                    @Html.Raw(Model.Value("roomText"))
+
+                    <div class="butn-dark mt-15 mb-30"> <a href="rooms2.html"><span>Check Now</span></a> </div>
+                </div>
+
+                
+                @if (amenities.Any())
+                {
+                    <div class="col-md-3 offset-md-1">
+                        <h6>@Umbraco.GetDictionaryValue("roomDetail.Amenities")</h6>
+                        <ul class="list-unstyled page-list mb-30">
+                            @foreach (var a in amenities)
+                            {
+                                <li>
+                                    <div class="page-list-icon"><span class="@GetIcon(a)"></span></div>
+                                    <div class="page-list-text"><p>@a</p></div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+@if (rooms != null && rooms.Children().Any())
+{
+    <section class="rooms1 section-padding bg-darkblack" data-scroll-index="1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-subtitle">@home?.Value("pageTitle")</div>
+                    <div class="section-title">@rooms.Name</div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var item in rooms.Children().Where(j => j.Value<string>("layout") != "Yatay"))
+                {
+                    var img = item.Value<IEnumerable<MediaWithCrops>>("roomImages");
+                    <div class="col-md-4">
+                        <div class="item">
+                            <div class="position-re o-hidden"> <img src="@img?.FirstOrDefault()?.Url()" alt=""> </div> <span class="category"><a href="@item.Url()">Book</a></span>
+                            <div class="con">
+                                <h6><a href="@item.Url()">@item.Value("roomPrice")</a></h6>
+                                <h5><a href="@item.Url()">@item.Value("roomName")</a> </h5>
+                                <div class="line"></div>
+                                <div class="row facilities">
+                                    <div class="col col-md-7">
+                                    </div>
+                                    <div class="col col-md-5 text-end">
+                                        <div class="permalink"><a href="@item.Url()">Details <i class="ti-arrow-right"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (rooms.Children().Where(j => j.Value<string>("layout") == "Yatay").Any())
+                {
+                    <div class="col-md-4">
+                        @foreach (var item in rooms.Children().Where(j => j.Value<string>("layout") == "Yatay"))
+                        {
+                            var img = item.Value<IEnumerable<MediaWithCrops>>("roomImages");
+                            <div class="item">
+                                <div class="position-re o-hidden"> <img src="@img?.FirstOrDefault()?.Url()" alt=""> </div> <span class="category"><a href="@item.Url()">Book</a></span>
+                                <div class="con">
+                                    <h6><a href="@item.Url()">@item.Value("roomPrice")</a></h6>
+                                    <h5><a href="@item.Url()">@item.Value("roomName")</a> </h5>
+                                    <div class="line"></div>
+                                    <div class="row facilities">
+                                        <div class="col col-md-7">
+                                        </div>
+                                        <div class="col col-md-5 text-end">
+                                            <div class="permalink"><a href="@item.Url()">Details <i class="ti-arrow-right"></i></a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+}
