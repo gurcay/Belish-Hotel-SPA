@@ -19,7 +19,7 @@
                 if(item.Children().Any())
                 {
                 <li class='cappa-menu-sub'>
-                    <a class="@(item.Name == Model.Name ? "active" : "")" href='@item.Url()'>@item.Name<i class="ti-angle-down"></i></a>
+                    <a class="@(item.Name == Model.Name ? "active" : "")" href='@item.Url()'>@item.Name <i class="ms-1 ti-angle-down"></i></a>
                     <ul>
                         @foreach(var child in item.Children())
                         {
