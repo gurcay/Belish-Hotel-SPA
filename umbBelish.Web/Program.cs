@@ -24,3 +24,11 @@ app.UseUmbraco()
     });
 
 await app.RunAsync();
+
+builder.Services.AddHealthChecks();
+
+var app = builder.Build();
+
+app.MapHealthChecks("/health");
+
+app.Run();
