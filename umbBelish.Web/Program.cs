@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHealthChecks();
 
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
@@ -10,6 +14,7 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
+app.MapHealthChecks("/health");
 
 app.UseUmbraco()
     .WithMiddleware(u =>
@@ -24,11 +29,3 @@ app.UseUmbraco()
     });
 
 await app.RunAsync();
-
-builder.Services.AddHealthChecks();
-
-var app = builder.Build();
-
-app.MapHealthChecks("/health");
-
-app.Run();
