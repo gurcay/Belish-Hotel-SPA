@@ -1,8 +1,7 @@
-version: "3.9"
-
 services:
+  # Umbbelish Uygulaması
   web:
-    image: ghcr.io/gurcay/umbbelish:latest
+    build: . 
     container_name: umbbelish-web
     environment:
       - ASPNETCORE_URLS=http://+:8080
@@ -13,16 +12,39 @@ services:
       - Logging__LogLevel__Microsoft=Warning
       - Logging__LogLevel__Umbraco=Debug
       - Umbraco__CMS__Global__UseHttps=true
-
     volumes:
       - ./volumes/sqlite:/umbraco/data
       - ./volumes/media:/app/wwwroot/media
     networks:
+      - mac-network
+    restart: unless-stopped
+
+  # Nginx Servisi
+  nginx:
+    image: nginx:alpine
+    container_name: umbbelish-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - mac-network
+    depends_on:
       - web
     restart: unless-stopped
 
+  # Cloudflare Tunnel Servisi
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: umbbelish-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - mac-network
+
 networks:
-  web:
-    external: true
-
-
+  mac-network:
+    external: true # Mac Mini'de önceden 'docker network create mac-network' komutunu çalıştırmış olman gerekir.
