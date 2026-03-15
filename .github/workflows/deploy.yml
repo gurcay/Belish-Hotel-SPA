@@ -5,37 +5,37 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 1. Adım: Tüm güncel repoyu Mac Mini'ye kopyala
-      - name: Copy files to Mac Mini via SCP
+      - name: Copy project files to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "." # Repodaki her şeyi al
-          target: "/root/opt/umbbelish" # Sunucudaki hedefe at
+          source: |
+            .
+            !.git
+            !.github
+            !volumes
+          target: /home/gurcay/opt/umbbelish
 
-      # 2. Adım: SSH ile bağlan, Docker imajını lokalde derle ve ayağa kaldır
-      - name: Build locally and Deploy via SSH
+      - name: Deploy on server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /root/opt/umbbelish
-            
-            # Cloudflare Token'ı environment variable olarak içeri alıyoruz
-            export CLOUDFLARE_TUNNEL_TOKEN=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
-            
-            # İmajı baştan derle (--build) ve ayağa kaldır
-            docker compose up -d --build --remove-orphans
-            
-            # Disk dolmasın diye, ismi olmayan eski/dangling imajları temizle
+            set -e
+            cd /home/gurcay/opt/umbbelish
+            cat > .env <<EOF
+            CLOUDFLARE_TUNNEL_TOKEN=${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+            EOF
+            docker compose -p umbbelish up -d --build
             docker image prune -f
